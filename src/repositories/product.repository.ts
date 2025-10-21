@@ -1,6 +1,7 @@
 import { Product } from "../models/product.model";
 
 export async function getTestProduct(): Promise<Product> {
+  
   return {
     id: 1,
     name: "Ração Premium Boi Saúde",
