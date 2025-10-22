@@ -1,12 +1,55 @@
-import { Request, Response } from "express";
-import * as productService from "../services/product.services";
+import { Request, Response } from 'express'
+import { ProductService } from '../services/product.service'
+import { success, error } from '../utils/response'
 
-export async function getTestProduct(req: Request, res: Response) {
-  try {
-    const product = await productService.getProductTest();
-    res.status(200).json(product);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erro interno do servidor" });
+const productService = new ProductService()
+
+export class ProductController {
+  async getAll(req: Request, res: Response) {
+    try {
+      const products = await productService.getAll()
+      return success(res, products, 'Products fetched successfully.')
+    } catch (err) {
+      return error(res, 'Error fetching products.')
+    }
+  }
+
+  async getById(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      const product = await productService.getById(Number(id))
+      return success(res, product, 'Product found.')
+    } catch (err) {
+      return error(res, 'Product not found.', 404)
+    }
+  }
+
+  async create(req: Request, res: Response) {
+    try {
+      const product = await productService.create(req.body)
+      return success(res, product, 'Product created successfully.')
+    } catch (err) {
+      return error(res, 'Error creating product.')
+    }
+  }
+
+  async update(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      const updated = await productService.update(Number(id), req.body)
+      return success(res, updated, 'Product updated successfully.')
+    } catch (err) {
+      return error(res, 'Error updating product.', 400)
+    }
+  }
+
+  async delete(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      await productService.delete(Number(id))
+      return success(res, null, 'Product deleted successfully.')
+    } catch (err) {
+      return error(res, 'Error deleting product.', 400)
+    }
   }
 }

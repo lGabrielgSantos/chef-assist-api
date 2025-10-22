@@ -1,8 +1,9 @@
-import { Router } from "express";
-import productRoutes from "./product.routes";
+import { Router } from 'express'
+import v1Routes from './v1'
 
-const router = Router();
+const router = Router()
 
-router.use("/products", productRoutes);
+// Mount version 1 routes
+router.use('/v1', v1Routes)
 
-export default router;
+export default router
