@@ -5,6 +5,7 @@ import { success, error } from '../utils/response'
 const productService = new ProductService()
 
 export class ProductController {
+
   async getAll(req: Request, res: Response) {
     try {
       const products = await productService.getAll()

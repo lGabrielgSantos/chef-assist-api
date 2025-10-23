@@ -1,0 +1,263 @@
+tags:
+  - name: Orders
+    description: Endpoints for managing restaurant orders
+
+paths:
+  /orders:
+    get:
+      summary: Get all orders
+      tags: [Orders]
+      responses:
+        200:
+          description: List of all orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Orders fetched successfully."
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+    post:
+      summary: Create a new order
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+            example:
+              customer_id: 1
+              total: 199.90
+              order_items:
+                - product_id: 2
+                  quantity: 3
+                - product_id: 4
+                  quantity: 1
+      responses:
+        201:
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Order created successfully."
+                  data:
+                    $ref: '#/components/schemas/Order'
+
+  /orders/{id}:
+    get:
+      summary: Get an order by ID
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Order ID
+      responses:
+        200:
+          description: Order found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Order found."
+                  data:
+                    $ref: '#/components/schemas/Order'
+        404:
+          description: Order not found
+
+    put:
+      summary: Update an order by ID
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Order ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderUpdate'
+            example:
+              total: 250.00
+              order_items:
+                - product_id: 2
+                  quantity: 4
+      responses:
+        200:
+          description: Order updated successfully
+        400:
+          description: Invalid input data
+
+    delete:
+      summary: Delete an order by ID
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Order ID
+      responses:
+        204:
+          description: Order deleted successfully
+        404:
+          description: Order not found
+
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        customer_id:
+          type: integer
+          example: 3
+        total:
+          type: number
+          example: 299.99
+        order_date:
+          type: string
+          format: date-time
+          example: "2025-10-23T12:00:00.000Z"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-10-23T12:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-10-23T12:10:00.000Z"
+        customers:
+          $ref: '#/components/schemas/Customer'
+        order_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+
+    OrderCreate:
+      type: object
+      required:
+        - customer_id
+        - total
+        - order_items
+      properties:
+        customer_id:
+          type: integer
+          example: 2
+        total:
+          type: number
+          example: 150.75
+        order_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemCreate'
+
+    OrderUpdate:
+      type: object
+      properties:
+        total:
+          type: number
+          example: 199.99
+        order_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemUpdate'
+
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        product_id:
+          type: integer
+          example: 5
+        quantity:
+          type: integer
+          example: 2
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-10-23T12:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-10-23T12:10:00.000Z"
+
+    OrderItemCreate:
+      type: object
+      required:
+        - product_id
+        - quantity
+      properties:
+        product_id:
+          type: integer
+          example: 5
+        quantity:
+          type: integer
+          example: 2
+
+    OrderItemUpdate:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          example: 5
+        quantity:
+          type: integer
+          example: 4
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: "João da Silva"
+        phone:
+          type: string
+          example: "+55 67 99999-9999"
+        email:
+          type: string
+          example: "joao.silva@email.com"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-10-23T10:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-10-23T11:00:00.000Z"
