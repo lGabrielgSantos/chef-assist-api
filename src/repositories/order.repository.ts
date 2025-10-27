@@ -1,36 +1,63 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
+import { IOrderRepository } from "../interfaces/IOrderRepository";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
-export class OrderRepository {
+export class OrderRepository implements IOrderRepository {
   async findAll() {
-    return prisma.orders.findMany({
-      include: {
-        order_items: true,
-        customers: true,
-      },
-    })
+    return await prisma.orders.findMany();
   }
 
   async findById(id: number) {
-    return prisma.orders.findUnique({
+    return await prisma.orders.findUnique({
       where: { id },
-      include: {
-        order_items: true,
-        customers: true,
-      },
-    })
+    });
   }
-
   async create(data: any) {
-    return prisma.orders.create({ data })
+    const { order_items, ...orderData } = data;
+    const order = await prisma.orders.create({
+      data: orderData,
+    });
+    if (order_items && order_items.length > 0) {
+      const itemsData = order_items.map((item: any) => ({
+        ...item,
+        order_id: order.id,
+      }));
+      await prisma.order_items.createMany({
+        data: itemsData,
+      });
+    }
+
+    return order;
   }
 
   async update(id: number, data: any) {
-    return prisma.orders.update({ where: { id }, data })
+    const { order_items, ...orderData } = data;
+    const order = await prisma.orders.update({
+      where: { id },
+      data: orderData,
+    });
+    if (order_items) {
+      await prisma.order_items.deleteMany({
+        where: { order_id: id },
+      });
+      const itemsData = order_items.map((item: any) => ({
+        ...item,
+        order_id: id,
+      }));
+      await prisma.order_items.createMany({
+        data: itemsData,
+      });
+    }
+    return order;
   }
 
   async delete(id: number) {
-    await prisma.orders.delete({ where: { id } })
+    await prisma.order_items.deleteMany({
+      where: { order_id: id },
+    });
+    await prisma.orders.delete({
+      where: { id },
+    });
   }
 }

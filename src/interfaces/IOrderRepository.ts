@@ -1,9 +1,9 @@
-import { OrderDTO } from "../dtos/order.dto"
+import { orders } from "@prisma/client"
 
-export interface OrderRepositoryInterface {
-  findAll(): Promise<OrderDTO[]>
-  findById(id: number): Promise<OrderDTO | null>
-  create(data: OrderDTO): Promise<OrderDTO>
-  update(id: number, data: OrderDTO): Promise<OrderDTO>
+export interface IOrderRepository{
+  findAll(): Promise<orders[]>
+  findById(id: number): Promise<orders | null>
+  create(data: orders): Promise<orders>
+  update(id: number, data: Partial<orders>): Promise<orders>
   delete(id: number): Promise<void>
 }
