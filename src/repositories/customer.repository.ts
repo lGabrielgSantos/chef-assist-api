@@ -1,25 +1,24 @@
-import { PrismaClient } from "@prisma/client"
-import { CustomerDTO } from "../dtos/customer.dto"
+import { customers, PrismaClient } from "@prisma/client"
 import { ICustomerRepository } from "../interfaces/ICustomerRepository"
 
 const prisma = new PrismaClient()
 
 export class CustomerRepository implements ICustomerRepository {
-  async findAll(): Promise<CustomerDTO[]> {
+  async findAll(): Promise<customers[]> {
     const customers = await prisma.customers.findMany({
       orderBy: { id: "desc" },
     })
     return customers
   }
 
-  async findById(id: number): Promise<CustomerDTO | null> {
+  async findById(id: number): Promise<customers | null> {
     const customer = await prisma.customers.findUnique({
       where: { id },
     })
     return customer
   }
 
-  async create(data: CustomerDTO): Promise<CustomerDTO> {
+  async create(data: customers): Promise<customers> {
     const customer = await prisma.customers.create({
       data: {
         name: data.name,
@@ -30,7 +29,7 @@ export class CustomerRepository implements ICustomerRepository {
     return customer
   }
 
-  async update(id: number, data: CustomerDTO): Promise<CustomerDTO | null> {
+  async update(id: number, data: customers): Promise<customers | null> {
     const existing = await prisma.customers.findUnique({ where: { id } })
     if (!existing) return null
 

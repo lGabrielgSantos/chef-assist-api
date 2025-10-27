@@ -4,10 +4,10 @@ import { ProductController } from '../../controllers/product.controller'
 const router = Router()
 const controller = new ProductController()
 
-router.get('/', controller.getAll)
-router.get('/:id', controller.getById)
-router.post('/', controller.create)
-router.put('/:id', controller.update)
-router.delete('/:id', controller.delete)
+router.get('/', controller.getAll.bind(controller))
+router.get('/:id', controller.getById.bind(controller))
+router.post('/', controller.create.bind(controller))
+router.put('/:id', controller.update.bind(controller))
+router.delete('/:id', controller.delete.bind(controller))
 
 export default router

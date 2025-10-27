@@ -1,5 +1,5 @@
 import { products } from '@prisma/client'
-import { ProductDTO } from '../dtos/product.dto'
+import { CreateProductDTO, ProductDTO, UpdateProductDTO } from '../dtos/product.dto'
 
 export class ProductMapper {
   static toDTO(product: products): ProductDTO {
@@ -11,5 +11,27 @@ export class ProductMapper {
 
   static toDTOList(products: products[]): ProductDTO[] {
     return products.map((product) => this.toDTO(product))
+  }
+    static toCreatePrisma(data: CreateProductDTO): products {
+    const now = new Date()
+
+    return {
+      id: 0, // Prisma autoincrement
+      name: data.name,
+      description: data.description ?? null,
+      price: data.price ?? null,
+      created_at: now,
+      updated_at: now,
+    } as products
+  }
+
+  // 🔹 Mapeia UpdateProductDTO → objeto parcial de `products`
+  static toUpdatePrisma(data: UpdateProductDTO): Partial<products> {
+    return {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      updated_at: new Date(),
+    }
   }
 }
