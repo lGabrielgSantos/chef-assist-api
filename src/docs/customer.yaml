@@ -1,0 +1,182 @@
+tags:
+  - name: Customers
+    description: Endpoints for managing customers
+
+paths:
+  /customers:
+    get:
+      summary: Get all customers
+      tags: [Customers]
+      responses:
+        200:
+          description: List of all customers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Customers fetched successfully."
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+    post:
+      summary: Create a new customer
+      tags: [Customers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreate'
+            example:
+              name: "João da Silva"
+              phone: "+55 67 99999-9999"
+              email: "joao.silva@email.com"
+      responses:
+        201:
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Customer created successfully."
+                  data:
+                    $ref: '#/components/schemas/Customer'
+
+  /customers/{id}:
+    get:
+      summary: Get a customer by ID
+      tags: [Customers]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Customer ID
+      responses:
+        200:
+          description: Customer found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Customer fetched successfully."
+                  data:
+                    $ref: '#/components/schemas/Customer'
+        404:
+          description: Customer not found
+
+    put:
+      summary: Update a customer by ID
+      tags: [Customers]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Customer ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdate'
+            example:
+              name: "Maria Oliveira"
+              phone: "+55 67 98888-7777"
+              email: "maria.oliveira@email.com"
+      responses:
+        200:
+          description: Customer updated successfully
+        400:
+          description: Invalid input data
+
+    delete:
+      summary: Delete a customer by ID
+      tags: [Customers]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Customer ID
+      responses:
+        204:
+          description: Customer deleted successfully
+        404:
+          description: Customer not found
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: "João da Silva"
+        phone:
+          type: string
+          example: "+55 67 99999-9999"
+        email:
+          type: string
+          example: "joao.silva@email.com"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-10-23T10:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-10-23T11:00:00.000Z"
+
+    CustomerCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "João da Silva"
+        phone:
+          type: string
+          example: "+55 67 99999-9999"
+        email:
+          type: string
+          example: "joao.silva@email.com"
+
+    CustomerUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Maria Oliveira"
+        phone:
+          type: string
+          example: "+55 67 98888-7777"
+        email:
+          type: string
+          example: "maria.oliveira@email.com"
