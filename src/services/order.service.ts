@@ -1,6 +1,6 @@
 import { OrderRepository } from '../repositories/order.repository'
 import { OrderMapper } from '../mappers/order.mapper'
-import { OrderDTO } from '../dtos/order.dto'
+import { CreateOrderDTO, OrderDTO, UpdateOrderDTO } from '../dtos/order.dto'
 
 export class OrderService {
   private repository: OrderRepository
@@ -19,12 +19,12 @@ export class OrderService {
     return order ? OrderMapper.toDTO(order) : null
   }
 
-  async create(data: any): Promise<OrderDTO> {
+  async create(data: CreateOrderDTO): Promise<OrderDTO> {
     const order = await this.repository.create(data)
     return OrderMapper.toDTO(order)
   }
 
-  async update(id: number, data: any): Promise<OrderDTO> {
+  async update(id: number, data: UpdateOrderDTO): Promise<OrderDTO> {
     const order = await this.repository.update(id, data)
     return OrderMapper.toDTO(order)
   }

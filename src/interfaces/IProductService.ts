@@ -1,9 +1,9 @@
-import { IProduct } from './IProduct'
 
+import { CreateProductDTO, ProductDTO, UpdateProductDTO } from "../dtos/product.dto"
 export interface IProductService {
-  getAll(): Promise<IProduct[]>
-  getById(id: number): Promise<IProduct | null>
-  create(data: IProduct): Promise<IProduct>
-  update(id: number, data: IProduct): Promise<IProduct | null>
+  getAll(): Promise<ProductDTO[]>
+  getById(id: number): Promise<ProductDTO | null>
+  create(data: CreateProductDTO): Promise<ProductDTO>
+  update(id: number, data: UpdateProductDTO): Promise<ProductDTO | null>
   delete(id: number): Promise<void>
 }
