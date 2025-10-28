@@ -4,17 +4,20 @@ import { IOrderRepository } from "../interfaces/IOrderRepository";
 const prisma = new PrismaClient();
 
 export class OrderRepository implements IOrderRepository {
-  async findAll() {
-    return await prisma.orders.findMany();
-  }
-
-  async findById(id: number) {
-    return await prisma.orders.findUnique({
-      where: { id },
+  async findAll(user_id: string) {
+    return await prisma.orders.findMany({
+      where: { user_id },
     });
   }
-  async create(data: any) {
+
+  async findById(id: number, user_id: string) {
+    return await prisma.orders.findUnique({
+      where: { id, user_id },
+    });
+  }
+  async create(data: any, user_id: string) {
     const { order_items, ...orderData } = data;
+    orderData.user_id = user_id;
     const order = await prisma.orders.create({
       data: orderData,
     });
@@ -31,10 +34,10 @@ export class OrderRepository implements IOrderRepository {
     return order;
   }
 
-  async update(id: number, data: any) {
+  async update(id: number, user_id: string, data: any) {
     const { order_items, ...orderData } = data;
     const order = await prisma.orders.update({
-      where: { id },
+      where: { id, user_id },
       data: orderData,
     });
     if (order_items) {
@@ -52,12 +55,12 @@ export class OrderRepository implements IOrderRepository {
     return order;
   }
 
-  async delete(id: number) {
+  async delete(id: number, user_id: string) {
     await prisma.order_items.deleteMany({
       where: { order_id: id },
     });
     await prisma.orders.delete({
-      where: { id },
+      where: { id, user_id },
     });
   }
 }

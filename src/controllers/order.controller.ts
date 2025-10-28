@@ -12,7 +12,7 @@ export class OrderController {
 
   async getAll(req: Request & { user?: any; token?: string }, res: Response) {
     try {
-      const orders = await this.orderService.getAll();
+      const orders = await this.orderService.getAll(req.user.id);
       return success(res, orders, "Orders fetched successfully.", 200);
     } catch (err) {
       return error(res, "Error fetching orders.");
@@ -22,7 +22,7 @@ export class OrderController {
   async getById(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
-      const order = await this.orderService.getById(Number(id));
+      const order = await this.orderService.getById(Number(id), req.user.id);
       if (!order) return error(res, "Order not found.", 404);
       return success(res, order, "Order fetched successfully.", 200);
     } catch (err) {
@@ -32,7 +32,7 @@ export class OrderController {
 
   async create(req: Request & { user?: any; token?: string }, res: Response) {
     try {
-      const newOrder = await this.orderService.create(req.body);
+      const newOrder = await this.orderService.create(req.body, req.user.id);
       return success(res, newOrder, "Order created successfully.", 201);
     } catch (err) {
       return error(res, "Error creating order.");
@@ -42,7 +42,7 @@ export class OrderController {
   async update(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
-      const updated = await this.orderService.update(Number(id), req.body);
+      const updated = await this.orderService.update(Number(id), req.body, req.user.id);
       return success(res, updated, "Order updated successfully.", 200);
     } catch (err) {
       return error(res, "Error updating order.");
@@ -52,7 +52,7 @@ export class OrderController {
   async delete(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
-      await this.orderService.delete(Number(id));
+      await this.orderService.delete(Number(id), req.user.id);
       return success(res, null, "Order deleted successfully.", 204);
     } catch (err) {
       return error(res, "Error deleting order.");

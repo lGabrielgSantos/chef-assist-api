@@ -1,9 +1,9 @@
 import { orders } from "@prisma/client"
 
 export interface IOrderRepository{
-  findAll(): Promise<orders[]>
-  findById(id: number): Promise<orders | null>
-  create(data: orders): Promise<orders>
-  update(id: number, data: Partial<orders>): Promise<orders>
-  delete(id: number): Promise<void>
+  findAll(user_id: string): Promise<orders[]>
+  findById(id: number, user_id: string): Promise<orders | null>
+  create(data: orders, user_id: string): Promise<orders>
+  update(id: number, user_id: string, data: Partial<orders>): Promise<orders>
+  delete(id: number, user_id: string): Promise<void>
 }
