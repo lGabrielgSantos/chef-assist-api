@@ -12,21 +12,43 @@ export class OrderService implements IOrderService {
   }
 
   async getAll(user_id: string): Promise<OrderDTO[]> {
-    const orders = await this.repository.findAll(user_id);
-    return OrderMapper.toDTOList(orders);
+    try {
+      const orders = await this.repository.findAll(user_id);
+      return OrderMapper.toDTOList(orders);
+    } catch (error: any) {
+      console.error("[OrderService] Failed to fetch orders:", error);
+      throw new Error("Failed to load orders.");
+    }
   }
 
   async getById(id: number, user_id: string): Promise<OrderDTO | null> {
-    const order = await this.repository.findById(id, user_id);
-    return order ? OrderMapper.toDTO(order) : null;
+    try {
+      const order = await this.repository.findById(id, user_id);
+      if (!order) throw new Error("Order not found.");
+      return OrderMapper.toDTO(order);
+    } catch (error: any) {
+      console.error(`[OrderService] Failed to fetch order #${id}:`, error);
+      throw new Error("Failed to fetch the order.");
+    }
   }
 
   async create(data: CreateOrderDTO, user_id: string): Promise<OrderDTO> {
-    const order = await this.repository.create(
-      OrderMapper.toCreatePrisma(data),
-      user_id
-    );
-    return OrderMapper.toDTO(order);
+    try {
+      const mappedData = OrderMapper.toCreatePrisma(data);
+      const order = await this.repository.create(mappedData, user_id);
+      return OrderMapper.toDTO(order);
+    } catch (error: any) {
+      console.error("[OrderService] Failed to create order:", error);
+      console.log("Error code:", error.code);
+      if (error.code === "P2003") {
+        throw new Error("Invalid or non-existent product reference.");
+      }
+      if (error.code === "P2002") {
+        throw new Error("Duplicate order detected.");
+      }
+
+      throw new Error("Failed to create the order.");
+    }
   }
 
   async update(
@@ -34,15 +56,32 @@ export class OrderService implements IOrderService {
     data: UpdateOrderDTO,
     user_id: string
   ): Promise<OrderDTO> {
-    const order = await this.repository.update(
-      id,
-      user_id,
-      OrderMapper.toUpdatePrisma(data)
-    );
-    return OrderMapper.toDTO(order);
+    try {
+      const mappedData = OrderMapper.toUpdatePrisma(data);
+      const order = await this.repository.update(id, user_id, mappedData);
+      return OrderMapper.toDTO(order);
+    } catch (error: any) {
+      console.error(`[OrderService] Failed to update order #${id}:`, error);
+
+      if (error.code === "P2025") {
+        throw new Error("Order not found for update.");
+      }
+
+      throw new Error("Failed to update the order.");
+    }
   }
 
   async delete(id: number, user_id: string): Promise<void> {
-    await this.repository.delete(id, user_id);
+    try {
+      await this.repository.delete(id, user_id);
+    } catch (error: any) {
+      console.error(`[OrderService] Failed to delete order #${id}:`, error);
+
+      if (error.code === "P2025") {
+        throw new Error("Order not found for deletion.");
+      }
+
+      throw new Error("Failed to delete the order.");
+    }
   }
 }

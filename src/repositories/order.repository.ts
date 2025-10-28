@@ -18,14 +18,19 @@ export class OrderRepository implements IOrderRepository {
   async create(data: any, user_id: string) {
     const { order_items, ...orderData } = data;
     orderData.user_id = user_id;
+
+    delete orderData.id;
+
     const order = await prisma.orders.create({
       data: orderData,
     });
+
     if (order_items && order_items.length > 0) {
       const itemsData = order_items.map((item: any) => ({
         ...item,
         order_id: order.id,
       }));
+
       await prisma.order_items.createMany({
         data: itemsData,
       });

@@ -13,9 +13,9 @@ export class ProductController {
 
   async getAll(req: Request & { user?: any; token?: string }, res: Response) {
     try {
-      const products = await this.productService.getAll();
+      const products = await this.productService.getAll(req.user?.id);
       return success(res, products, "Products fetched successfully.", 200);
-    } catch (err) {
+    } catch (err: any) {
       return error(res, "Error fetching products.");
     }
   }
@@ -23,39 +23,46 @@ export class ProductController {
   async getById(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
-      const product = await this.productService.getById(Number(id));
+      const product = await this.productService.getById(
+        Number(id),
+        req.user?.id
+      );
       return success(res, product, "Product found.", 200);
-    } catch (err) {
-      return error(res, "Product not found.", 404);
+    } catch (err: any) {
+      return error(res, err?.message || "Product not found.", 404);
     }
   }
 
   async create(req: Request & { user?: any; token?: string }, res: Response) {
     try {
-      const product = await this.productService.create(req.body);
+      const product = await this.productService.create(req.body, req.user?.id);
       return success(res, product, "Product created successfully.", 201);
-    } catch (err) {
-      return error(res, "Error creating product.");
+    } catch (err: any) {
+      return error(res, err?.message || "Error creating product.");
     }
   }
 
   async update(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
-      const updated = await this.productService.update(Number(id), req.body);
+      const updated = await this.productService.update(
+        Number(id),
+        req.user?.id,
+        req.body
+      );
       return success(res, updated, "Product updated successfully.", 200);
-    } catch (err) {
-      return error(res, "Error updating product.", 400);
+    } catch (err: any) {
+      return error(res, err?.message || "Error updating product.", 400);
     }
   }
 
   async delete(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
-      await this.productService.delete(Number(id));
+      await this.productService.delete(Number(id), req.user?.id);
       return success(res, null, "Product deleted successfully.", 204);
-    } catch (err) {
-      return error(res, "Error deleting product.", 400);
+    } catch (err: any) {
+      return error(res, err?.message || "Error deleting product.", 400);
     }
   }
 }
