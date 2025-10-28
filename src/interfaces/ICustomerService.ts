@@ -5,9 +5,9 @@ import {
 } from "../dtos/customer.dto"
 
 export interface ICustomerService {
-  getAll(): Promise<CustomerDTO[]>
-  getById(id: number): Promise<CustomerDTO | null>
-  create(data: CreateCustomerDTO): Promise<CustomerDTO>
-  update(id: number, data: UpdateCustomerDTO): Promise<CustomerDTO | null>
-  delete(id: number): Promise<void>
+  getAll(user_id: string): Promise<CustomerDTO[]>
+  getById(id: number, user_id: string): Promise<CustomerDTO | null>
+  create(data: CreateCustomerDTO, user_id: string): Promise<CustomerDTO>
+  update(id: number, data: UpdateCustomerDTO, user_id: string): Promise<CustomerDTO | null>
+  delete(id: number, user_id: string): Promise<void>
 }

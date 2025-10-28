@@ -12,7 +12,6 @@ export class ProductController {
   }
 
   async getAll(req: Request & { user?: any; token?: string }, res: Response) {
-    console.log("Authenticated user:", req.user);
     try {
       const products = await this.productService.getAll();
       return success(res, products, "Products fetched successfully.", 200);
@@ -21,7 +20,7 @@ export class ProductController {
     }
   }
 
-  async getById(req: Request, res: Response) {
+  async getById(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
       const product = await this.productService.getById(Number(id));
@@ -31,7 +30,7 @@ export class ProductController {
     }
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const product = await this.productService.create(req.body);
       return success(res, product, "Product created successfully.", 201);
@@ -40,7 +39,7 @@ export class ProductController {
     }
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
       const updated = await this.productService.update(Number(id), req.body);
@@ -50,7 +49,7 @@ export class ProductController {
     }
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
       await this.productService.delete(Number(id));

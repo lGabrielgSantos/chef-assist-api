@@ -24,17 +24,4 @@ export class AuthController {
       return error(res, err.message || "Invalid credentials.")
     }
   }
-
-  async me(req: Request, res: Response) {
-    try {
-      const authHeader = req.headers.authorization
-      if (!authHeader) return error(res, "Token missing.", 401)
-
-      const token = authHeader.split(" ")[1]
-      const user = await authService.verifyToken(token)
-      return success(res, user, "Authenticated user.", 200)
-    } catch (err: any) {
-      return error(res, err.message || "Invalid token.")
-    }
-  }
 }

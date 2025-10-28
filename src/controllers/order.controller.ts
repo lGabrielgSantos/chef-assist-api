@@ -10,7 +10,7 @@ export class OrderController {
     this.orderService = orderService ?? new OrderService();
   }
 
-  async getAll(req: Request, res: Response) {
+  async getAll(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const orders = await this.orderService.getAll();
       return success(res, orders, "Orders fetched successfully.", 200);
@@ -19,7 +19,7 @@ export class OrderController {
     }
   }
 
-  async getById(req: Request, res: Response) {
+  async getById(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
       const order = await this.orderService.getById(Number(id));
@@ -30,7 +30,7 @@ export class OrderController {
     }
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const newOrder = await this.orderService.create(req.body);
       return success(res, newOrder, "Order created successfully.", 201);
@@ -39,7 +39,7 @@ export class OrderController {
     }
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
       const updated = await this.orderService.update(Number(id), req.body);
@@ -49,7 +49,7 @@ export class OrderController {
     }
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const { id } = req.params;
       await this.orderService.delete(Number(id));

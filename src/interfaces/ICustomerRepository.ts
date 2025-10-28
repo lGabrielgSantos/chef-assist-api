@@ -1,9 +1,9 @@
 import { customers } from "@prisma/client"
 
 export interface ICustomerRepository {
-  findAll(): Promise<customers[]>
-  findById(id: number): Promise<customers | null>
-  create(data: customers): Promise<customers>
-  update(id: number, data: Partial<customers>): Promise<customers | null>
-  delete(id: number): Promise<void>
+  findAll(user_id: string): Promise<customers[]>
+  findById(id: number, user_id: string): Promise<customers | null>
+  create(data: customers, user_id: string): Promise<customers>
+  update(id: number, data: Partial<customers>, user_id: string): Promise<customers | null>
+  delete(id: number, user_id: string): Promise<void>
 }

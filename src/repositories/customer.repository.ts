@@ -4,33 +4,35 @@ import { ICustomerRepository } from "../interfaces/ICustomerRepository"
 const prisma = new PrismaClient()
 
 export class CustomerRepository implements ICustomerRepository {
-  async findAll(): Promise<customers[]> {
+  async findAll(user_id: string): Promise<customers[]> {
     const customers = await prisma.customers.findMany({
+      where: {user_id },
       orderBy: { id: "desc" },
     })
     return customers
   }
 
-  async findById(id: number): Promise<customers | null> {
+  async findById(id: number, user_id: string): Promise<customers | null> {
     const customer = await prisma.customers.findUnique({
-      where: { id },
+      where: { id, user_id },
     })
     return customer
   }
 
-  async create(data: customers): Promise<customers> {
+  async create(data: customers, user_id: string): Promise<customers> {
     const customer = await prisma.customers.create({
       data: {
         name: data.name,
         phone: data.phone,
         email: data.email,
+        user_id: user_id,
       },
     })
     return customer
   }
 
-  async update(id: number, data: customers): Promise<customers | null> {
-    const existing = await prisma.customers.findUnique({ where: { id } })
+  async update(id: number, data: customers, userId: string): Promise<customers | null> {
+    const existing = await prisma.customers.findUnique({ where: { id, user_id: userId } })
     if (!existing) return null
 
     const customer = await prisma.customers.update({
@@ -44,9 +46,9 @@ export class CustomerRepository implements ICustomerRepository {
     return customer
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number, userId: string): Promise<void> {
     await prisma.customers.delete({
-      where: { id },
+      where: { id, user_id: userId },
     })
   }
 }
