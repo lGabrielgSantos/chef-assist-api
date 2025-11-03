@@ -1,78 +1,79 @@
 
 # 🍳 CHEF ASSIST API
 
-API desenvolvida em **Node.js + TypeScript** para gerenciamento de clientes, pedidos e produtos, com arquitetura em camadas (Controller → Service → Repository), integração com **Prisma ORM**, autenticação JWT e documentação **Swagger**.
+API built with **Node.js + TypeScript** for managing customers, orders, and products.  
+It follows a clean **layered architecture** (Controller → Service → Repository), integrates **Prisma ORM**, **JWT authentication**, and includes **Swagger documentation**.
 
 ---
 
-## 🧱 Estrutura do Projeto
+## 🧱 Project Structure
 
 ```
 src/
-├── config/              # Configurações gerais (env, prisma, etc.)
-├── controllers/         # Controladores de rotas (entrypoints HTTP)
-├── docs/                # Documentação Swagger (YAML)
+├── config/              # Global configurations (env, prisma, etc.)
+├── controllers/         # Route controllers (HTTP entrypoints)
+├── docs/                # Swagger documentation (YAML)
 ├── dtos/                # Data Transfer Objects
-├── interfaces/          # Contratos e interfaces (Repository, Service)
-├── mappers/             # Conversões de entidades/DTOs
-├── middlewares/         # Middlewares globais (auth, erros, logs)
-├── repositories/        # Camada de acesso a dados (Prisma)
-├── routes/              # Definição das rotas e módulos
-├── services/            # Regras de negócio
-├── tests/               # Testes unitários (Jest)
-├── utils/               # Funções utilitárias
-├── app.ts               # Inicialização da aplicação
-└── server.ts            # Bootstrap do servidor HTTP
+├── interfaces/          # Contracts and interfaces (Repository, Service)
+├── mappers/             # Entity/DTO mappers
+├── middlewares/         # Global middlewares (auth, error handling, logging)
+├── repositories/        # Data access layer (Prisma)
+├── routes/              # Route definitions and modules
+├── services/            # Business logic layer
+├── tests/               # Unit tests (Jest)
+├── utils/               # Utility functions
+├── app.ts               # App initialization
+└── server.ts            # HTTP server bootstrap
 ```
 
 ---
 
-## ⚙️ Tecnologias Principais
+## ⚙️ Main Technologies
 
 - **Node.js** + **TypeScript**
 - **Express.js**
 - **Prisma ORM**
-- **PostgreSQL** (ou outro banco configurado)
-- **JWT** para autenticação
-- **Swagger** para documentação da API
-- **Jest** para testes unitários
-- **ESLint + Prettier** para padronização de código
+- **PostgreSQL** (or any configured database)
+- **JWT** for authentication
+- **Swagger** for API documentation
+- **Jest** for unit testing
+- **ESLint + Prettier** for code formatting and linting
 
 ---
 
-## 🚀 Instalação e Execução
+## 🚀 Installation & Execution
 
-### 1. Clone o repositório
+### 1. Clone the repository
 ```bash
-git clone https://github.com/seu-usuario/chef-assist-api.git
+git clone https://github.com/your-username/chef-assist-api.git
 cd chef-assist-api
 ```
 
-### 2. Instale as dependências
+### 2. Install dependencies
 ```bash
 npm install
 ```
 
-### 3. Configure as variáveis de ambiente
-Crie um arquivo `.env` na raiz do projeto com base no exemplo:
+### 3. Configure environment variables
+Create a `.env` file in the project root using this template:
 ```bash
 DATABASE_URL="postgresql://user:password@localhost:5432/chef_assist"
-JWT_SECRET="sua_chave_jwt"
+JWT_SECRET="your_jwt_secret_key"
 PORT=3000
 ```
 
-### 4. Execute as migrações do Prisma
+### 4. Run Prisma migrations
 ```bash
 npx prisma migrate dev
 ```
 
-### 5. Inicie o servidor
-Modo desenvolvimento:
+### 5. Start the server
+Development mode:
 ```bash
 npm run dev
 ```
 
-Modo produção:
+Production mode:
 ```bash
 npm run build
 npm start
@@ -80,14 +81,14 @@ npm start
 
 ---
 
-## 📚 Documentação da API
+## 📚 API Documentation
 
-A documentação Swagger está disponível em:
+Swagger documentation is available at:
 ```
 http://localhost:3000/api-docs
 ```
 
-Arquivos YAML:
+YAML files:
 ```
 /src/docs/customer.yaml
 /src/docs/order.yaml
@@ -96,89 +97,89 @@ Arquivos YAML:
 
 ---
 
-## 🧩 Padrão Arquitetural
+## 🧩 Architectural Pattern
 
-O projeto segue o padrão **Service-Repository Pattern**, garantindo:
-- Separação clara entre **controladores**, **regras de negócio** e **acesso a dados**
-- Facilidade para testar e manter o código
-- Baixo acoplamento e alta coesão
+This project follows the **Service–Repository Pattern**, ensuring:
+- Clear separation between **controllers**, **business logic**, and **data access**
+- Easy testing and maintenance
+- Low coupling and high cohesion
 
-Fluxo de execução:
+Execution flow:
 ```
-Request → Controller → Service → Repository → Prisma → Banco de Dados
+Request → Controller → Service → Repository → Prisma → Database
 ```
 
 ---
 
-## 🔐 Autenticação
+## 🔐 Authentication
 
-Autenticação via **JWT (JSON Web Token)**.
+Authentication is handled with **JWT (JSON Web Token)**.
 
-- Endpoint de login: `POST /auth/login`
-- Header necessário nas rotas protegidas:
+- Login endpoint: `POST /auth/login`
+- Header required for protected routes:
   ```
   Authorization: Bearer <token>
   ```
 
 ---
 
-## 🧪 Testes
+## 🧪 Testing
 
-Rodar todos os testes:
+Run all tests:
 ```bash
 npm test
 ```
 
-Gerar cobertura:
+Generate coverage:
 ```bash
 npm run test:coverage
 ```
 
-Exemplo de teste unitário:
+Example of a unit test file:
 ```
 src/tests/services/customer.service.spec.ts
 ```
 
 ---
 
-## 📦 Scripts Disponíveis
+## 📦 Available Scripts
 
-| Comando | Descrição |
-|----------|------------|
-| `npm run dev` | Executa o servidor em modo desenvolvimento |
-| `npm run build` | Transpila o código TypeScript para JavaScript |
-| `npm start` | Executa a versão compilada |
-| `npm run lint` | Verifica a padronização de código |
-| `npm test` | Executa os testes unitários |
-
----
-
-## 🧰 Convenções
-
-- **Commits:** padrão [Conventional Commits](https://www.conventionalcommits.org/)
-- **Branches:** `main` (prod) / `develop` / `feature/*`
-- **Lint:** eslint + prettier
-- **Imports absolutos:** configurados via `tsconfig.json`
+| Command | Description |
+|----------|-------------|
+| `npm run dev` | Run the server in development mode |
+| `npm run build` | Transpile TypeScript to JavaScript |
+| `npm start` | Run the compiled version |
+| `npm run lint` | Check code style using ESLint |
+| `npm test` | Run all unit tests |
 
 ---
 
-## 👨‍💻 Contribuição
+## 🧰 Conventions
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature
+- **Commits:** follow [Conventional Commits](https://www.conventionalcommits.org/)
+- **Branches:** `main` (production) / `develop` / `feature/*`
+- **Linting:** eslint + prettier
+- **Absolute imports:** configured via `tsconfig.json`
+
+---
+
+## 👨‍💻 Contributing
+
+1. Fork the project  
+2. Create a new branch for your feature  
    ```bash
-   git checkout -b feature/nova-funcionalidade
+   git checkout -b feature/new-feature
    ```
-3. Faça commit das alterações
+3. Commit your changes  
    ```bash
-   git commit -m "feat: adiciona novo endpoint de pedidos"
+   git commit -m "feat: add new order endpoint"
    ```
-4. Envie um PR 🚀
+4. Push your branch and open a Pull Request 🚀
 
 ---
 
-## 🧑‍🍳 Autor
+## 🧑‍🍳 Author
 
-**Chef Assist API** — Desenvolvido por [Seu Nome]  
-📧 [seu.email@empresa.com]  
-🌐 [https://seusite.com](https://seusite.com)
+**Chef Assist API** — Developed by [Your Name]  
+📧 [gabrielgsantos.dev@gmail.com]  
+🌐 [https://gsdeveloper.vercel.app/]
