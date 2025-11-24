@@ -26,6 +26,7 @@ export class CustomerRepository implements ICustomerRepository {
         phone: data.phone,
         email: data.email,
         user_id: user_id,
+        city: data.city ?? null,
       },
     })
     return customer

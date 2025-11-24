@@ -33,6 +33,7 @@ export class CustomerController {
   async create(req: Request & { user?: any; token?: string }, res: Response) {
     try {
       const userId = req.user?.id;
+      console.log("body", req.body);
       const newCustomer = await this.customerService.create(req.body, userId);
       return success(res, newCustomer, "Customer created successfully.", 201);
     } catch (err: any) {

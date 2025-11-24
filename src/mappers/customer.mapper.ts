@@ -17,6 +17,7 @@ export class CustomerMapper {
       name: data.name,
       email: data.email,
       phone: data.phone ?? null,
+      city: data.city ?? null,
       created_at: now,
       updated_at: now,
     } as unknown as customers
