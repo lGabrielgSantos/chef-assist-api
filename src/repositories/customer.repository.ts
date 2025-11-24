@@ -42,6 +42,8 @@ export class CustomerRepository implements ICustomerRepository {
         name: data.name ?? existing.name,
         phone: data.phone ?? existing.phone,
         email: data.email ?? existing.email,
+        city: data.city ?? existing.city,
+        updated_at: new Date(),
       },
     })
     return customer

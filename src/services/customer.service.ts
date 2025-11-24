@@ -35,7 +35,6 @@ export class CustomerService implements ICustomerService {
   async create(data: CustomerDTO, userId: string): Promise<CustomerDTO> {
     try {
       const mappedData = CustomerMapper.toCreatePrisma(data);
-      console.log("Mapped Data:", mappedData);
       const customer = await this.repository.create(mappedData, userId);
       return CustomerMapper.toDTO(customer);
     } catch (error: any) {
@@ -60,7 +59,6 @@ export class CustomerService implements ICustomerService {
 
       return CustomerMapper.toDTO(customer);
     } catch (error: any) {
-      console.error(`[CustomerService] Failed to update customer #${id}:`, error);
 
       if (error.code === "P2025") {
         throw new Error("Customer not found for update.");

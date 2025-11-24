@@ -28,7 +28,9 @@ export class CustomerMapper {
       name: data.name ?? undefined,
       email: data.email ?? undefined,
       phone: data.phone ?? undefined,
+      city: data.city ?? undefined,
       updated_at: new Date(),
+
     }
   }
 }
