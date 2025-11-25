@@ -7,6 +7,35 @@ paths:
     get:
       summary: Get all orders
       tags: [Orders]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+          description: Filter orders by status (e.g., PENDING, PAID, CANCELLED)
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter by a specific order date (YYYY-MM-DD). Overrides startDate/endDate when provided.
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter orders created on or after this date (YYYY-MM-DD)
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter orders created on or before this date (YYYY-MM-DD)
+        - name: customerId
+          in: query
+          schema:
+            type: integer
+          description: Filter orders by customer ID
       responses:
         200:
           description: List of all orders
@@ -58,6 +87,58 @@ paths:
                     example: "Order created successfully."
                   data:
                     $ref: '#/components/schemas/Order'
+
+  /orders/filter:
+    get:
+      summary: Get orders filtered by status, date, or customer
+      tags: [Orders]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+          description: Filter orders by status (e.g., PENDING, PAID, CANCELLED)
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter by a specific order date (YYYY-MM-DD). Overrides startDate/endDate when provided.
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter orders created on or after this date (YYYY-MM-DD)
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter orders created on or before this date (YYYY-MM-DD)
+        - name: customerId
+          in: query
+          schema:
+            type: integer
+          description: Filter orders by customer ID
+      responses:
+        200:
+          description: Filtered list of orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Orders fetched successfully."
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
 
   /orders/{id}:
     get:

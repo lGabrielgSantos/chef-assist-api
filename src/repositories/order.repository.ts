@@ -1,13 +1,33 @@
 import { PrismaClient } from "@prisma/client";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
+import { OrderFilters } from "../interfaces/OrderFilters";
 
 const prisma = new PrismaClient();
 
 export class OrderRepository implements IOrderRepository {
-  async findAll(user_id: string) {
-    return await prisma.orders.findMany({
-      where: { user_id },
+  async findAll(user_id: string, filters?: OrderFilters) {
+    const where: any = { user_id };
+
+    if (filters?.customerId) {
+      where.customer_id = filters.customerId;
+    }
+
+    if (filters?.startDate || filters?.endDate) {
+      where.order_date = {};
+      if (filters.startDate) where.order_date.gte = filters.startDate;
+      if (filters.endDate) where.order_date.lte = filters.endDate;
+    }
+
+    const orders = await prisma.orders.findMany({
+      where,
+      orderBy: { order_date: "desc" },
     });
+
+    if (filters?.status) {
+      return orders.filter((order: any) => order.status === filters.status);
+    }
+
+    return orders;
   }
 
   async findById(id: number, user_id: string) {

@@ -1,4 +1,6 @@
 import { OrderService } from "../../services/order.service";
+import { OrderMapper } from "../../mappers/order.mapper";
+import { OrderFilters } from "../../interfaces/OrderFilters";
 
 describe("OrderService", () => {
   let mockRepository: any;
@@ -15,14 +17,20 @@ describe("OrderService", () => {
     service = new OrderService(mockRepository);
   });
 
-  it("should return a list of orders", async () => {
+  it("should return a list of orders with filters applied", async () => {
     const mockData = [{ id: 1, total: 100 }];
+    const filters: OrderFilters = {
+      status: "PAID",
+      startDate: new Date("2025-01-01"),
+      endDate: new Date("2025-01-31"),
+      customerId: 5,
+    };
     mockRepository.findAll.mockResolvedValue(mockData);
 
-    const result = await service.getAll("user-1");
+    const result = await service.getAll("user-1", filters);
 
-    expect(result).toEqual(mockData);
-    expect(mockRepository.findAll).toHaveBeenCalledWith("user-1");
+    expect(result).toEqual(OrderMapper.toDTOList(mockData as any));
+    expect(mockRepository.findAll).toHaveBeenCalledWith("user-1", filters);
   });
 
   it("should throw an error if findAll fails", async () => {
@@ -30,6 +38,7 @@ describe("OrderService", () => {
     await expect(service.getAll("user-1")).rejects.toThrow(
       "Failed to load orders."
     );
+    expect(mockRepository.findAll).toHaveBeenCalledWith("user-1", undefined);
   });
 
   it("should return an order by id", async () => {

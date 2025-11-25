@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { OrderService } from "../services/order.service";
 import { success, error } from "../utils/response";
 import { IOrderService } from "../interfaces/IOrderService";
+import { OrderFilters } from "../interfaces/OrderFilters";
 
 export class OrderController {
   private orderService: IOrderService;
@@ -12,7 +13,36 @@ export class OrderController {
 
   async getAll(req: Request & { user?: any; token?: string }, res: Response) {
     try {
-      const orders = await this.orderService.getAll(req.user.id);
+      const { status, date, startDate, endDate, customerId } = req.query;
+
+      const parseDate = (value?: string | string[]) => {
+        if (!value) return undefined;
+        const parsed = new Date(String(value));
+        return Number.isNaN(parsed.getTime()) ? undefined : parsed;
+      };
+
+      const filters: OrderFilters = {
+        status: status ? String(status) : undefined,
+        customerId: customerId ? Number(customerId) : undefined,
+      };
+
+      const singleDate = parseDate(date as string | undefined);
+      const rangeStart = parseDate(startDate as string | undefined);
+      const rangeEnd = parseDate(endDate as string | undefined);
+
+      if (singleDate) {
+        const startOfDay = new Date(singleDate);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(singleDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        filters.startDate = startOfDay;
+        filters.endDate = endOfDay;
+      } else {
+        if (rangeStart) filters.startDate = rangeStart;
+        if (rangeEnd) filters.endDate = rangeEnd;
+      }
+
+      const orders = await this.orderService.getAll(req.user.id, filters);
       return success(res, orders, "Orders fetched successfully.", 200);
     } catch (err: any) {
       return error(res, err?.message || "Error fetching orders.");

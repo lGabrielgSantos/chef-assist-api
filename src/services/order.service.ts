@@ -3,6 +3,7 @@ import { OrderMapper } from "../mappers/order.mapper";
 import { CreateOrderDTO, OrderDTO, UpdateOrderDTO } from "../dtos/order.dto";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
 import { IOrderService } from "../interfaces/IOrderService";
+import { OrderFilters } from "../interfaces/OrderFilters";
 
 export class OrderService implements IOrderService {
   private repository: IOrderRepository;
@@ -11,9 +12,9 @@ export class OrderService implements IOrderService {
     this.repository = repository ?? new OrderRepository();
   }
 
-  async getAll(user_id: string): Promise<OrderDTO[]> {
+  async getAll(user_id: string, filters?: OrderFilters): Promise<OrderDTO[]> {
     try {
-      const orders = await this.repository.findAll(user_id);
+      const orders = await this.repository.findAll(user_id, filters);
       return OrderMapper.toDTOList(orders);
     } catch (error: any) {
       console.error("[OrderService] Failed to fetch orders:", error);
