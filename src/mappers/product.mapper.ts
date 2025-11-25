@@ -16,7 +16,6 @@ export class ProductMapper {
     const now = new Date()
 
     return {
-      id: 0, // Prisma autoincrement
       name: data.name,
       description: data.description ?? null,
       price: data.price ?? null,
