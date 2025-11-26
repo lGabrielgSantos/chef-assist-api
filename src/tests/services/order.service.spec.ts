@@ -1,6 +1,7 @@
 import { OrderService } from "../../services/order.service";
 import { OrderMapper } from "../../mappers/order.mapper";
 import { OrderFilters } from "../../interfaces/OrderFilters";
+import { OrderStatus } from "../../enums/order-status.enum";
 
 describe("OrderService", () => {
   let mockRepository: any;
@@ -20,7 +21,7 @@ describe("OrderService", () => {
   it("should return a list of orders with filters applied", async () => {
     const mockData = [{ id: 1, total: 100 }];
     const filters: OrderFilters = {
-      status: "PAID",
+      status: OrderStatus.Approved,
       startDate: new Date("2025-01-01"),
       endDate: new Date("2025-01-31"),
       customerId: 5,
@@ -29,7 +30,8 @@ describe("OrderService", () => {
 
     const result = await service.getAll("user-1", filters);
 
-    expect(result).toEqual(OrderMapper.toDTOList(mockData as any));
+    const dtoOrders = OrderMapper.toDTOList(mockData as any);
+    expect(result).toEqual(OrderMapper.toDTOCoreDataList(dtoOrders));
     expect(mockRepository.findAll).toHaveBeenCalledWith("user-1", filters);
   });
 

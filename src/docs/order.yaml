@@ -12,7 +12,8 @@ paths:
           in: query
           schema:
             type: string
-          description: Filter orders by status (e.g., PENDING, PAID, CANCELLED)
+            enum: [PENDING, APPROVED]
+          description: Filter orders by status (PENDING or APPROVED)
         - name: date
           in: query
           schema:
@@ -97,7 +98,8 @@ paths:
           in: query
           schema:
             type: string
-          description: Filter orders by status (e.g., PENDING, PAID, CANCELLED)
+            enum: [PENDING, APPROVED]
+          description: Filter orders by status (PENDING or APPROVED)
         - name: date
           in: query
           schema:
@@ -221,6 +223,10 @@ components:
         id:
           type: integer
           example: 1
+        status:
+          type: string
+          enum: [PENDING, APPROVED]
+          example: "PENDING"
         customer_id:
           type: integer
           example: 3
@@ -253,6 +259,10 @@ components:
         - total
         - order_items
       properties:
+        status:
+          type: string
+          enum: [PENDING, APPROVED]
+          example: "PENDING"
         customer_id:
           type: integer
           example: 2
@@ -267,6 +277,10 @@ components:
     OrderUpdate:
       type: object
       properties:
+        status:
+          type: string
+          enum: [PENDING, APPROVED]
+          example: "APPROVED"
         total:
           type: number
           example: 199.99

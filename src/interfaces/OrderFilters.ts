@@ -1,5 +1,7 @@
+import { OrderStatus } from "../enums/order-status.enum"
+
 export interface OrderFilters {
-  status?: string
+  status?: OrderStatus
   startDate?: Date
   endDate?: Date
   customerId?: number

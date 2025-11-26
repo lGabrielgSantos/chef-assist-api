@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import {
+  CreateOrderPayload,
   IOrderRepository,
   OrderWithRelations,
   UpdateOrderPayload,
@@ -14,6 +15,10 @@ export class OrderRepository implements IOrderRepository {
 
     if (filters?.customerId) {
       where.customer_id = filters.customerId;
+    }
+
+    if (filters?.status !== undefined) {
+      where.status = filters.status;
     }
 
     if (filters?.startDate || filters?.endDate) {
@@ -31,10 +36,6 @@ export class OrderRepository implements IOrderRepository {
       },
     });
 
-    if (filters?.status) {
-      return orders.filter((order: any) => order.status === filters.status);
-    }
-
     return orders;
   }
 
@@ -47,7 +48,7 @@ export class OrderRepository implements IOrderRepository {
       },
     });
   }
-  async create(data: any, user_id: string) {
+  async create(data: CreateOrderPayload, user_id: string) {
     const { order_items, ...orderData } = data;
     orderData.user_id = user_id;
 

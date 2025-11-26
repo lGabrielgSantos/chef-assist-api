@@ -1,4 +1,5 @@
 import { orders, order_items, customers } from "@prisma/client";
+import { OrderStatus } from "../enums/order-status.enum";
 import { CreateOrderDTO, UpdateOrderDTO, OrderDTO, GetAllOrdersDTO } from "../dtos/order.dto";
 
 export class OrderMapper {
@@ -10,6 +11,7 @@ export class OrderMapper {
   ): OrderDTO {
     return {
       ...order,
+      status: order.status !== null && order.status !== undefined ? (order.status as OrderStatus) : null,
       total: order.total ? Number(order.total) : null,
     };
   }
@@ -39,6 +41,7 @@ export class OrderMapper {
     }
     return {
       id: order.id,
+      status: order.status ?? null,
       order_date: order.order_date ? order.order_date.toISOString() : null,
       created_at: order.created_at ? order.created_at.toISOString() : null,
       updated_at: order.updated_at ? order.updated_at.toISOString() : null,
@@ -84,6 +87,7 @@ export class OrderMapper {
     return {
       customer_id: data.customer_id ?? null,
       order_date: data.order_date ?? now,
+      status: data.status ?? OrderStatus.Pending,
       total: data.total ?? null,
       notes: data.notes ?? null,
       created_at: now,
@@ -115,6 +119,7 @@ export class OrderMapper {
     return {
       customer_id: data.customer_id ?? undefined,
       order_date: data.order_date ?? undefined,
+      status: data.status ?? undefined,
       total: data.total ?? undefined,
       notes: data.notes !== undefined ? data.notes : undefined,
       updated_at: now,
