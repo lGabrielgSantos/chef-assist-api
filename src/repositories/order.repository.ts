@@ -21,6 +21,10 @@ export class OrderRepository implements IOrderRepository {
     const orders = await prisma.orders.findMany({
       where,
       orderBy: { order_date: "desc" },
+      include: {
+        order_items: true,
+        customers: true,
+      },
     });
 
     if (filters?.status) {
@@ -33,6 +37,10 @@ export class OrderRepository implements IOrderRepository {
   async findById(id: number, user_id: string) {
     return await prisma.orders.findUnique({
       where: { id, user_id },
+      include: {
+        order_items: true,
+        customers: true,
+      },
     });
   }
   async create(data: any, user_id: string) {

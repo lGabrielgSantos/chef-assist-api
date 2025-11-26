@@ -14,6 +14,33 @@ export class OrderMapper {
     };
   }
 
+  static toDTOWithRelations(
+    order: orders & {
+      order_items?: order_items[];
+      customers?: customers | null;
+    }
+  ): OrderDTO {
+    const order_items = order.order_items ?? [];
+    const customers = order.customers ?? null;
+
+    return {
+      ...this.toDTO(order),
+      order_items,
+      customers,
+      order_items_count: order_items.length,
+      customer_name: customers?.name ?? null,
+    };
+  }
+
+  static toDTOListWithRelations(
+    orders: (orders & {
+      order_items?: order_items[];
+      customers?: customers | null;
+    })[]
+  ): OrderDTO[] {
+    return orders.map((order) => this.toDTOWithRelations(order));
+  }
+
   static toDTOList(
     orders: (orders & {
       order_items?: order_items[];

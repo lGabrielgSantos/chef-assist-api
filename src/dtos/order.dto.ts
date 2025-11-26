@@ -4,6 +4,8 @@ export interface OrderDTO extends Omit<orders, 'total'> {
   total: number | null
   order_items?: order_items[]
   customers?: customers | null
+  order_items_count?: number
+  customer_name?: string | null
 }
 
 export type CreateOrderDTO = Omit<orders, 'id' | 'created_at' | 'updated_at'> & {

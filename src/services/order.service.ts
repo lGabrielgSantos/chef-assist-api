@@ -15,9 +15,8 @@ export class OrderService implements IOrderService {
   async getAll(user_id: string, filters?: OrderFilters): Promise<OrderDTO[]> {
     try {
       const orders = await this.repository.findAll(user_id, filters);
-      return OrderMapper.toDTOList(orders);
+      return OrderMapper.toDTOListWithRelations(orders);
     } catch (error: any) {
-      console.error("[OrderService] Failed to fetch orders:", error);
       throw new Error("Failed to load orders.");
     }
   }
