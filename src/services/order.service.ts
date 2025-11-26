@@ -59,6 +59,7 @@ export class OrderService implements IOrderService {
   ): Promise<OrderDTO> {
     try {
       const mappedData = OrderMapper.toUpdatePrisma(data);
+      console.log("Mapped data for update:", mappedData);
       const order = await this.repository.update(id, user_id, mappedData);
       return OrderMapper.toDTO(order);
     } catch (error: any) {

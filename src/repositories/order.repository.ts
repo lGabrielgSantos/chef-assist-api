@@ -1,11 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { IOrderRepository } from "../interfaces/IOrderRepository";
+import {
+  IOrderRepository,
+  OrderWithRelations,
+  UpdateOrderPayload,
+} from "../interfaces/IOrderRepository";
 import { OrderFilters } from "../interfaces/OrderFilters";
 
 const prisma = new PrismaClient();
 
 export class OrderRepository implements IOrderRepository {
-  async findAll(user_id: string, filters?: OrderFilters) {
+  async findAll(user_id: string, filters?: OrderFilters): Promise<OrderWithRelations[]> {
     const where: any = { user_id };
 
     if (filters?.customerId) {
@@ -34,7 +38,7 @@ export class OrderRepository implements IOrderRepository {
     return orders;
   }
 
-  async findById(id: number, user_id: string) {
+  async findById(id: number, user_id: string): Promise<OrderWithRelations | null> {
     return await prisma.orders.findUnique({
       where: { id, user_id },
       include: {
@@ -67,25 +71,50 @@ export class OrderRepository implements IOrderRepository {
     return order;
   }
 
-  async update(id: number, user_id: string, data: any) {
+  async update(
+    id: number,
+    user_id: string,
+    data: UpdateOrderPayload
+  ): Promise<OrderWithRelations> {
     const { order_items, ...orderData } = data;
-    const order = await prisma.orders.update({
-      where: { id, user_id },
-      data: orderData,
+
+    const updatedOrder = await prisma.$transaction(async (tx) => {
+      await tx.orders.update({
+        where: { id, user_id },
+        data: orderData,
+      });
+
+      if (order_items) {
+        await tx.order_items.deleteMany({
+          where: { order_id: id },
+        });
+
+        if (order_items.length) {
+          const itemsData = order_items.map((item) => ({
+            ...item,
+            order_id: id,
+          }));
+
+          await tx.order_items.createMany({
+            data: itemsData,
+          });
+        }
+      }
+
+      return tx.orders.findUnique({
+        where: { id, user_id },
+        include: {
+          order_items: true,
+          customers: true,
+        },
+      });
     });
-    if (order_items) {
-      await prisma.order_items.deleteMany({
-        where: { order_id: id },
-      });
-      const itemsData = order_items.map((item: any) => ({
-        ...item,
-        order_id: id,
-      }));
-      await prisma.order_items.createMany({
-        data: itemsData,
-      });
+
+    if (!updatedOrder) {
+      throw new Error("Failed to load updated order.");
     }
-    return order;
+
+    return updatedOrder;
   }
 
   async delete(id: number, user_id: string) {

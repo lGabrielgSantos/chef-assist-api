@@ -91,12 +91,32 @@ export class OrderMapper {
     };
   }
 
-  static toUpdatePrisma(data: UpdateOrderDTO): Partial<orders> {
+  static toUpdatePrisma(
+    data: UpdateOrderDTO
+  ): Partial<orders> & {
+    order_items?: {
+      product_id: number;
+      quantity: number;
+      created_at: Date;
+      updated_at: Date;
+    }[];
+  } {
+    const now = new Date();
+
+    const orderItems =
+      data.order_items?.map((item) => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        created_at: now,
+        updated_at: now,
+      })) ?? undefined;
+
     return {
       customer_id: data.customer_id ?? undefined,
       order_date: data.order_date ?? undefined,
       total: data.total ?? undefined,
-      updated_at: new Date(),
+      updated_at: now,
+      order_items: orderItems,
     };
   }
 }
