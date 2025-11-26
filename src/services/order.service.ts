@@ -1,6 +1,6 @@
 import { OrderRepository } from "../repositories/order.repository";
 import { OrderMapper } from "../mappers/order.mapper";
-import { CreateOrderDTO, OrderDTO, UpdateOrderDTO } from "../dtos/order.dto";
+import { CreateOrderDTO, GetAllOrdersDTO, OrderDTO, UpdateOrderDTO } from "../dtos/order.dto";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
 import { IOrderService } from "../interfaces/IOrderService";
 import { OrderFilters } from "../interfaces/OrderFilters";
@@ -12,10 +12,10 @@ export class OrderService implements IOrderService {
     this.repository = repository ?? new OrderRepository();
   }
 
-  async getAll(user_id: string, filters?: OrderFilters): Promise<OrderDTO[]> {
+  async getAll(user_id: string, filters?: OrderFilters): Promise<GetAllOrdersDTO[]> {
     try {
       const orders = await this.repository.findAll(user_id, filters);
-      return OrderMapper.toDTOListWithRelations(orders);
+      return OrderMapper.toDTOCoreDataList(orders);
     } catch (error: any) {
       throw new Error("Failed to load orders.");
     }

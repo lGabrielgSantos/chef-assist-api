@@ -1,5 +1,5 @@
 import { orders, order_items, customers } from "@prisma/client";
-import { CreateOrderDTO, UpdateOrderDTO, OrderDTO } from "../dtos/order.dto";
+import { CreateOrderDTO, UpdateOrderDTO, OrderDTO, GetAllOrdersDTO } from "../dtos/order.dto";
 
 export class OrderMapper {
   static toDTO(
@@ -32,6 +32,26 @@ export class OrderMapper {
     };
   }
 
+  static toDTOCoreData(order: OrderDTO): GetAllOrdersDTO {
+    let totalItemCount = 0;
+    if (order.order_items) {
+      totalItemCount = order.order_items.length;
+    }
+    return {
+      id: order.id,
+      order_date: order.order_date ? order.order_date.toISOString() : null,
+      created_at: order.created_at ? order.created_at.toISOString() : null,
+      updated_at: order.updated_at ? order.updated_at.toISOString() : null,
+      total: order.total ? Number(order.total) : 0,
+      customer_id: order.customer_id,
+      customer_name: order.customers?.name || null,
+      order_items_count: totalItemCount,
+    };
+  } 
+
+  static toDTOCoreDataList(orders: OrderDTO[]): GetAllOrdersDTO[] {
+    return orders.map((order) => this.toDTOCoreData(order));
+  }
   static toDTOListWithRelations(
     orders: (orders & {
       order_items?: order_items[];
