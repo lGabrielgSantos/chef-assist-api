@@ -85,6 +85,7 @@ export class OrderMapper {
       customer_id: data.customer_id ?? null,
       order_date: data.order_date ?? now,
       total: data.total ?? null,
+      notes: data.notes ?? null,
       created_at: now,
       updated_at: now,
       order_items: orderItems,
@@ -115,6 +116,7 @@ export class OrderMapper {
       customer_id: data.customer_id ?? undefined,
       order_date: data.order_date ?? undefined,
       total: data.total ?? undefined,
+      notes: data.notes !== undefined ? data.notes : undefined,
       updated_at: now,
       order_items: orderItems,
     };
